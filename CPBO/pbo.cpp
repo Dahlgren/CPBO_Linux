@@ -447,7 +447,7 @@ bool pboPack(char *sd, char *df, bool overwrite) {
 
   // "sreV" Header
   char hdrb[21];
-  ZeroMemory(hdrb, 21);
+  memset(hdrb, 0, 21);
   strcpy(hdrb+1, "sreV");
   fwrite(hdrb, 21, 1, o);
 
@@ -485,7 +485,7 @@ bool pboPack(char *sd, char *df, bool overwrite) {
   }
   
   // Write blank separator block
-  ZeroMemory(hdrb, 21);
+  memset(hdrb, 0, 21);
   fwrite(hdrb, 21, 1, o);
 
   // Seek back & calculate hash for current data
@@ -539,7 +539,7 @@ bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize) {
   size = size-4;
   DWORD *checksumCorrect = (DWORD*) &buf[size];
 
-  ZeroMemory(out, outSize);
+  memset(out, 0, outSize);
 
   BYTE *ptr = buf;
   BYTE *optr = out;
