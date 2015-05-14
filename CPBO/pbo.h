@@ -7,11 +7,11 @@
 typedef unsigned char       BYTE;
 typedef unsigned long       DWORD;
 typedef __int64 LONGLONG;
+typedef char CHAR;
 
 #define Int32x32To64(a, b)  ((__int64)(((__int64)((long)(a))) * ((long)(b))))
 #define MAXDWORD    0xffffffff  
-
-
+#define MAX_PATH          260
 
 typedef struct _FILETIME {
     DWORD dwLowDateTime;
@@ -56,4 +56,23 @@ typedef struct {
 	bool extract;
 } FTENTRY;
 
+//from minwinbase.h
+typedef struct _WIN32_FIND_DATAA {
+	DWORD dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD nFileSizeHigh;
+	DWORD nFileSizeLow;
+	DWORD dwReserved0;
+	DWORD dwReserved1;
+	_Field_z_ CHAR   cFileName[MAX_PATH];
+	_Field_z_ CHAR   cAlternateFileName[14];
+#ifdef _MAC
+	DWORD dwFileType;
+	DWORD dwCreatorType;
+	WORD  wFinderFlags;
+#endif
+} WIN32_FIND_DATAA, *PWIN32_FIND_DATAA, *LPWIN32_FIND_DATAA;
+typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
 #endif;

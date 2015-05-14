@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 
   char rnd[256];
-  sprintf(rnd, "_cpbo_tmp__%d__", 132465789);
+  sprintf_s(rnd, "_cpbo_tmp__%d__", 132465789);
 
 
   printf("%s <http://www.kegetys.net>\n", VERSIONSTRING);
@@ -53,7 +53,6 @@ int main(int argc, char* argv[]) {
   }
 
   // Parse parameters
-  bool gui = false;
   bool overwrite = false;
   for(int ai=1;ai<argc;ai++) {
 
@@ -61,9 +60,6 @@ int main(int argc, char* argv[]) {
 	  // Overwrite all files
 	  overwrite = true;
 	}
-
-	if(!_stricmp("-gui", argv[ai]))
-	  gui = true;
 
 	if(!_stricmp("-e", argv[ai])) {
 	  if(argc-ai < 2)
@@ -75,12 +71,10 @@ int main(int argc, char* argv[]) {
 		odir = argv[ai+2];
 
 	  printf("Extracting %s\n", argv[ai+1]);
-	  if(pboEx(argv[ai+1], odir, overwrite, gui)) {
+	  if(pboEx(argv[ai+1], odir, overwrite, false)) {
 		printf("Done.\n");
 		return 1;
 	  } else {
-		printf("Failed!\n");
-		//MessageBox(NULL, "PBO extract failed", "cpbo", MB_ICONSTOP);
 		printf("Extract of one or more files failed");
 		return -1;
 	  }
@@ -100,7 +94,6 @@ int main(int argc, char* argv[]) {
 		printf("Done.\n");
 		return 1;
 	  } else {
-		printf("Failed!\n");
 		printf("PBO creation failed");
 		return -1;
 	  }

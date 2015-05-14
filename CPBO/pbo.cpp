@@ -23,7 +23,6 @@ MA  02110-1301  USA
 #include <string.h>
 
 
-
 // From the internets
 void UnixTimeToFileTime(time_t t, LPFILETIME pft) {
      LONGLONG ll;
@@ -42,7 +41,9 @@ time_t FILETIMEToUnixTime(FILETIME filetime) {
 
 // Does file exist?
 bool fileExists(char *filename) {
-  FILE *f = fopen(filename, "rb");
+  //FILE *f = fopen(filename, "rb");
+  FILE *f;
+  errno_t errOpenFile = fopen_s(&f, filename, "rb");
   if(f) {
     fclose(f);
     return true;
@@ -65,6 +66,7 @@ bool fgetsz(void *d, int maxlen, FILE *f) {
   return true;
 }
 
+/*
 // Create all subdirs in filename
 void createDirs(char *fname) {
   char *fn = new char[strlen(fname)+1];
@@ -178,16 +180,17 @@ bool pboEx(char *sf, char *dd, bool overwrite, bool gui) {
           fread(&e, sizeof(e), 1, i);
 
           //printf("File: %s, %d KB\n", str, e.DataSize/1024);
-          /*if(e.PackingMethod == 0x43707273) {
-            // Cant handle these (yet?)
-            
-            printf("%s:\n", str);
-            printf("%d\n", e.DataSize);
-            printf("%d\n", e.OriginalSize);
+         
+		// if(e.PackingMethod == 0x43707273) {
+        //    // Cant handle these (yet?)
+        //    
+        //    printf("%s:\n", str);
+        //    printf("%d\n", e.DataSize);
+        //   printf("%d\n", e.OriginalSize);
 
-            printf("Compressed file found! aborting\n");
-            return false;
-          }*/
+        //    printf("Compressed file found! aborting\n");
+        //    return false;
+        //  }
           
           if(e.PackingMethod == 0x43707273)
             ft[fi].origsize = e.OriginalSize;
@@ -328,6 +331,8 @@ bool pboEx(char *sf, char *dd, bool overwrite, bool gui) {
 
   return !someFailed;
 }
+*/
+
 
 int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LEN]) {
   char dir[FNAMELEN];
