@@ -35,7 +35,7 @@ using namespace boost;
 bool fileExists(char *filename) {
   //FILE *f = fopen(filename, "rb");
   FILE *f;
-  errno_t errOpenFile = fopen_s(&f, filename, "rb");
+  int errOpenFile = fopen(&f, filename, "rb");
   if(f) {
 	fclose(f);
 	return true;
@@ -66,9 +66,9 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 					  continue;
 				  if (!strcmp(it->filename().string().c_str(), "."))
 					  continue;
-				  if (!_stricmp(it->filename().string().c_str(), PREFIXFILE)) // Do not pack prefix file
+				  if (!strcasecmp(it->filename().string().c_str(), PREFIXFILE)) // Do not pack prefix file
 					  continue;
-				  if (!_stricmp(it->filename().string().c_str(), EXCLUDEFILE))
+				  if (!strcasecmp(it->filename().string().c_str(), EXCLUDEFILE))
 					  continue;
 
 				  if (filesystem::is_directory((filesystem::path)*it)) {
@@ -79,7 +79,7 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 						  // Check for exclude
 						  bool skip = false;
 						  for(int i=0;i<EX_NUM;i++) {
-							  if (strlen(excludes[i]) > 1 && !_stricmp(excludes[i], &it->filename().string().c_str()[strlen(it->filename().string().c_str()) - strlen(excludes[i])])) {
+							  if (strlen(excludes[i]) > 1 && !strcasecmp(excludes[i], &it->filename().string().c_str()[strlen(it->filename().string().c_str()) - strlen(excludes[i])])) {
 							  // printf("Skipping: %s - %s\n", fd.cFileName, excludes[i]);
 							  skip = true;
 							  break;

@@ -25,8 +25,8 @@
 #define MAXLONGLONG     (0x7fffffffffffffff)
 #define MAXDWORD		0xffffffff  
 
-typedef __int64 LONGLONG;
-typedef unsigned __int64 ULONGLONG;
+typedef long long LONGLONG;
+typedef unsigned long long ULONGLONG;
 
 typedef unsigned long       DWORD;
 typedef unsigned char       BYTE;
@@ -57,4 +57,4 @@ typedef struct {
 	bool extract;
 } FTENTRY;
 
-#endif;
+#endif
