@@ -4,38 +4,36 @@
 #include <stdio.h>
 #include <cstdlib>
 
-typedef unsigned char       BYTE;
-typedef unsigned long       DWORD;
-typedef __int64 LONGLONG;
-typedef char CHAR;
-
-#define Int32x32To64(a, b)  ((__int64)(((__int64)((long)(a))) * ((long)(b))))
-#define MAXDWORD    0xffffffff  
-#define MAX_PATH          260
-
-typedef struct _FILETIME {
-    DWORD dwLowDateTime;
-    DWORD dwHighDateTime;
-} FILETIME, *PFILETIME, *LPFILETIME;
-#define _FILETIME_
-
 // PBO Extract status
 #define STATUS_HEADER		0
 #define STATUS_FILECOUNT	1
 #define STATUS_FILETABLE	2
 #define STATUS_DONE			3
 
-#define FNAMELEN	512		// Max length of filenames
-#define PREFIXFILE	"$PBOPREFIX$" // File name to store pbo prefix in
-#define EXCLUDEFILE "$EXCLUDE$" // File name with exluded extensions
+#define FNAMELEN		512				// Max length of filenames
+#define PREFIXFILE		"$PBOPREFIX$"	// File name to store pbo prefix in
+#define EXCLUDEFILE		"$EXCLUDE$"		// File name with exluded extensions
 #define VERSIONSTRING	"cpbo v2.13 by Kegetys"
-#define EX_NUM	256		// Max number of excludes
-#define EX_LEN	256		// Max exclude length
+#define EX_NUM			256				// Max number of excludes
+#define EX_LEN			256				// Max exclude length
+
+#define Int32x32To64(a, b)  ((__int64)(((__int64)((long)(a))) * ((long)(b))))
+
+#define _ULONGLONG_
+#define MAXLONGLONG     (0x7fffffffffffffff)
+#define MAXDWORD		0xffffffff  
+
+typedef __int64 LONGLONG;
+typedef unsigned __int64 ULONGLONG;
+
+typedef unsigned long       DWORD;
+typedef unsigned char       BYTE;
 
 // Function prototypes
 bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
 bool pboPack(char *sd, char *df, bool overwrite);
-bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
+//bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
+
 
 // PBO entry without null terminated string
 typedef struct {
@@ -56,23 +54,12 @@ typedef struct {
 	bool extract;
 } FTENTRY;
 
-//from minwinbase.h
-typedef struct _WIN32_FIND_DATAA {
-	DWORD dwFileAttributes;
-	FILETIME ftCreationTime;
-	FILETIME ftLastAccessTime;
-	FILETIME ftLastWriteTime;
-	DWORD nFileSizeHigh;
-	DWORD nFileSizeLow;
-	DWORD dwReserved0;
-	DWORD dwReserved1;
-	_Field_z_ CHAR   cFileName[MAX_PATH];
-	_Field_z_ CHAR   cAlternateFileName[14];
-#ifdef _MAC
-	DWORD dwFileType;
-	DWORD dwCreatorType;
-	WORD  wFinderFlags;
-#endif
-} WIN32_FIND_DATAA, *PWIN32_FIND_DATAA, *LPWIN32_FIND_DATAA;
-typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
+typedef struct _FILETIME {
+    DWORD dwLowDateTime;
+    DWORD dwHighDateTime;
+} FILETIME, *PFILETIME, *LPFILETIME;
+#define _FILETIME_
+
+
+
 #endif;
