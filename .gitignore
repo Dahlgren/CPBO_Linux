@@ -1,0 +1,11 @@
+*.opensdf
+*.sdf
+*.obj
+*.log
+*.idb
+*.tlog
+*.filters
+CPBO.v12.suo
+*.pdb
+CPBO.sln
+*.vcxproj
