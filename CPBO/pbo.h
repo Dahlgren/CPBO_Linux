@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <cstdlib>
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 // PBO Extract status
 #define STATUS_HEADER		0
@@ -45,6 +47,7 @@ typedef struct {
 	unsigned int	DataSize;
 } PBOENTRY;
 
+
 // Table used to store pbo filename table
 typedef struct {
 	char fname[FNAMELEN];
@@ -53,13 +56,5 @@ typedef struct {
 	unsigned int origsize; // 0 = not compressed
 	bool extract;
 } FTENTRY;
-
-typedef struct _FILETIME {
-    DWORD dwLowDateTime;
-    DWORD dwHighDateTime;
-} FILETIME, *PFILETIME, *LPFILETIME;
-#define _FILETIME_
-
-
 
 #endif;

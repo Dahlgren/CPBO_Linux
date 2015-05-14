@@ -23,11 +23,12 @@ MA  02110-1301  USA
 #include <iostream>
 #include <cstring>
 #include <iterator>
-#include <algorithm>
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/format.hpp"
 
 //using namespace std;
-using namespace boost::filesystem;
+//using namespace boost::filesystem;
+using namespace boost;
 
 
 // Does file exist?
@@ -46,11 +47,11 @@ bool fileExists(char *filename) {
 int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LEN]) {
   char dir[FNAMELEN];
   sprintf(dir, "%s\\*.*", sd);
-
+ 
   int res = 1;
   int count = 0;
 
-  path p (dir);
+  filesystem::path p (dir);
 
   try 
   {
@@ -59,21 +60,18 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 		  if (is_directory(p)) 
 		  {
 
-			  for (path::iterator it = p.begin(); it != p.end(); ++it) 
+			  for (filesystem::path::iterator it = p.begin(); it != p.end(); ++it)
 			  {
-				  path fn = it->filename();
-
-
-				  if(!strcmp(fn.string().c_str(),".."))
+				  if (!strcmp(it->filename().string().c_str(), ".."))
 					  continue;
-					if(!strcmp(fn.string().c_str(),"."))
+				  if (!strcmp(it->filename().string().c_str(), "."))
 					  continue;
-					if(!_stricmp(fn.string().c_str(), PREFIXFILE)) // Do not pack prefix file
+				  if (!_stricmp(it->filename().string().c_str(), PREFIXFILE)) // Do not pack prefix file
 					  continue;
-					if(!_stricmp(fn.string().c_str(), EXCLUDEFILE))
+				  if (!_stricmp(it->filename().string().c_str(), EXCLUDEFILE))
 					  continue;
 
-					if(is_directory((path)*it)) {
+				  if (filesystem::is_directory((filesystem::path)*it)) {
 						  char foo[1024];
 						  sprintf(foo, "%s\\%s", sd, it->filename());
 						  count += getDirFiles(foo, ftable, fti, excludes);
@@ -81,7 +79,7 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 						  // Check for exclude
 						  bool skip = false;
 						  for(int i=0;i<EX_NUM;i++) {
-							if(strlen(excludes[i]) > 1 && !_stricmp(excludes[i], &fn.string().c_str()[strlen(fn.string().c_str())-strlen(excludes[i])])) {
+							  if (strlen(excludes[i]) > 1 && !_stricmp(excludes[i], &it->filename().string().c_str()[strlen(it->filename().string().c_str()) - strlen(excludes[i])])) {
 							  // printf("Skipping: %s - %s\n", fd.cFileName, excludes[i]);
 							  skip = true;
 							  break;
@@ -98,13 +96,15 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 							strcpy(ftable[*fti].fname, foo);
 
 							// Modification time
-//WARNING               original mit creation time
+//WARNING original mit creation time
+//TODO
 //							ftable[*fti].timestamp = (DWORD) FILETIMEToUnixTime(fd.ftCreationTime);
 							ftable[*fti].timestamp = static_cast<long int>(last_write_time(p));
 
 							// Size, TODO: 4GB limit check?
 							//ftable[*fti].len = (fd.nFileSizeHigh * MAXDWORD) + fd.nFileSizeLow; 
 //INCOMPLETE
+//TODO
 							ftable[*fti].len = file_size(p); 
 
 							(*fti)++;
@@ -118,7 +118,7 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 		  }
 	  }
   }
-  catch (const filesystem_error& ex)
+  catch (const filesystem::filesystem_error& ex)
   {
 	  printf(ex.what());
   }
