@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 
   char rnd[256];
-  sprintf_s(rnd, "_cpbo_tmp__%d__", 132465789);
+  sprintf(rnd, "_cpbo_tmp__%d__", 132465789);
 
 
   printf("%s <http://www.kegetys.net>\n", VERSIONSTRING);
@@ -56,12 +56,12 @@ int main(int argc, char* argv[]) {
   bool overwrite = false;
   for(int ai=1;ai<argc;ai++) {
 
-	if(!_stricmp("-y", argv[ai])) {
+	if(!strcasecmp("-y", argv[ai])) {
 	  // Overwrite all files
 	  overwrite = true;
 	}
-
-	if(!_stricmp("-e", argv[ai])) {
+/*
+	if(!strcasecmp("-e", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
 
@@ -79,8 +79,8 @@ int main(int argc, char* argv[]) {
 		return -1;
 	  }
 	}
-
-	if(!_stricmp("-p", argv[ai])) {
+*/
+	if(!strcasecmp("-p", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
 

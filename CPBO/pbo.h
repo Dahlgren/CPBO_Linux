@@ -25,14 +25,14 @@
 #define MAXLONGLONG     (0x7fffffffffffffff)
 #define MAXDWORD		0xffffffff  
 
-typedef __int64 LONGLONG;
-typedef unsigned __int64 ULONGLONG;
+typedef long long LONGLONG;
+typedef unsigned long long ULONGLONG;
 
 typedef unsigned long       DWORD;
 typedef unsigned char       BYTE;
 
 // Function prototypes
-bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
+//bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
 bool pboPack(char *sd, char *df, bool overwrite);
 //bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
 
@@ -57,4 +57,4 @@ typedef struct {
 	bool extract;
 } FTENTRY;
 
-#endif;
+#endif
