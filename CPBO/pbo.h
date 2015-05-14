@@ -32,7 +32,7 @@ typedef unsigned long       DWORD;
 typedef unsigned char       BYTE;
 
 // Function prototypes
-bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
+//bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
 bool pboPack(char *sd, char *df, bool overwrite);
 //bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
 

@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 	  // Overwrite all files
 	  overwrite = true;
 	}
-
+/*
 	if(!strcasecmp("-e", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 		return -1;
 	  }
 	}
-
+*/
 	if(!strcasecmp("-p", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
