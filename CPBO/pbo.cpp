@@ -62,17 +62,35 @@ int strcasecmp_generic(const char *s1, const char *s2) {
 
 // Read null terminated string from file
 bool fgetsz(void *d, int maxlen, FILE *f) {
-  int r = 0;
-  char *dd = (char*) d;
-  char c;
-  do {
-	c = fgetc(f);
-	*dd++ = c;
-	r++;
-  } while(c != 0x00 && c != EOF && r<maxlen);
-  if(ferror(f))
-	return false;
-  return true;
+	int r = 0;
+	char *dd = (char*) d;
+	char c;
+
+	do {
+		c = fgetc(f);
+		*dd++ = c;
+		r++;
+	} while(c != 0x00 && c != EOF && r<maxlen);
+	
+	if(ferror(f))
+		return false;
+	
+	return true;
+}
+
+// Create all subdirs in filename
+void createDirs(char *fname) {
+  char *fn = new char[strlen(fname)+1];
+  strcpy(fn, fname);
+
+  for(DWORD i=0;i<strlen(fn);i++)
+    if(fn[i] == '/' || fn[i] == '\\') {
+      fn[i] = 0x00;
+      filesystem::create_directory(fn);
+      fn[i] = '/';
+    }
+
+  delete[] fn;
 }
 
 // Extract a PBO, sf = source filename, dd = target directory
@@ -95,6 +113,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 	memset(product, 0, FNAMELEN);
 
 	bool someFailed = false;
+	bool someTimeFailed = false;
 
 	fgetsz(str, FNAMELEN, i);
 
@@ -228,20 +247,22 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 	}
 
 	//Ask for overwriting
-	//bool create_directory(const path& p, system::error_code& ec);
-
 	//if(!overwrite && !CreateDirectory(outdir, NULL)) {
-	if(!overwrite && !filesystem::create_directory(outdir)) {
+	if(!overwrite && filesystem::exists(outdir) && filesystem::is_directory(outdir)) {
 		char str[256];
 		sprintf(str, "Directory '%s' already exists!", outdir);
 		return true; //Abort
+	} else if (!filesystem::exists(outdir)) {
+		filesystem::create_directory(outdir);
 	}
+
 
 	// Create prefix store file
 	if(strlen(prefix) > 0) {
 		char oname[FNAMELEN];
 		sprintf(oname, "%s\\%s", outdir, PREFIXFILE);
-		filesystem::create_directories(oname);
+		createDirs(oname);
+
 		FILE *fo = fopen(oname, "wb");
 		fputs(prefix ,fo);
 		fclose(fo);
@@ -260,7 +281,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 		int l = ft[o].len;
 		printf("Extracting: %s (%d KB)\n", ft[o].fname, ft[o].len/1024);
 
-		filesystem::create_directories(oname);
+		createDirs(oname);
 		FILE *fo = fopen(oname, "wb");
 
 		if(ft[o].origsize == 0) {
@@ -308,7 +329,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 				CloseHandle(tf);
 			}
 			*/
-			printf("Explicit \"set file creation time\" is disabled !\n");
+			someTimeFailed = true;
 		} else {
 			printf("Warning! File creation time not set (Invalid time)\n");
 		}
@@ -317,6 +338,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 	fclose(i);
 	delete[] ft;
 
+	if (someTimeFailed) printf("Explicit \"set file creation time\" is disabled !\n");
 	return !someFailed;
 }
 
