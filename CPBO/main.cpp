@@ -21,6 +21,10 @@ MA  02110-1301  USA
 #include <cstdlib>
 #include "pbo.h"
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 
 void usage(void) {
   printf("\nUsage:\n");
@@ -56,12 +60,11 @@ int main(int argc, char* argv[]) {
   bool overwrite = false;
   for(int ai=1;ai<argc;ai++) {
 
-	if(!strcasecmp("-y", argv[ai])) {
+	if(!strcasecmp_generic("-y", argv[ai])) {
 	  // Overwrite all files
 	  overwrite = true;
 	}
-/*
-	if(!strcasecmp("-e", argv[ai])) {
+	if(!strcasecmp_generic("-e", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
 
@@ -71,7 +74,7 @@ int main(int argc, char* argv[]) {
 		odir = argv[ai+2];
 
 	  printf("Extracting %s\n", argv[ai+1]);
-	  if(pboEx(argv[ai+1], odir, overwrite, false)) {
+	  if(pboEx(argv[ai+1], odir, overwrite)) {
 		printf("Done.\n");
 		return 1;
 	  } else {
@@ -79,8 +82,7 @@ int main(int argc, char* argv[]) {
 		return -1;
 	  }
 	}
-*/
-	if(!strcasecmp("-p", argv[ai])) {
+	if(!strcasecmp_generic("-p", argv[ai])) {
 	  if(argc-ai < 2)
 		usage();
 
