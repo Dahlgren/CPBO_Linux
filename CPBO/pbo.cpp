@@ -597,7 +597,7 @@ bool pboPack(char *sd, char *df, bool overwrite) {
 
 	// Write file data
 	for(int i=0; i<fti; i++) {
-		printf("file %d/%d: %s (%d KB)\n", i, fti, ft[i].fname, ft[i].len/1024);
+		printf("file %d/%d: %s (%d KB)\n", i+1, fti, ft[i].fname, ft[i].len/1024);
 
 		FILE *inp = fopen(ft[i].fname, "rb");
 		if(!inp) {
