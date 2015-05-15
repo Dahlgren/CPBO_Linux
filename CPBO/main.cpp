@@ -36,8 +36,6 @@ void usage(void) {
   printf("  cpbo.exe [-y] -p (directory) [filename.pbo]\n");
   printf("  pbo name is optional, directory name used if undefined\n");
   printf("  optional -y parameter overwrites pbo without asking\n\n");
-  printf("Associate cpbo with PBO files and directories:\n");
-  printf("  cpbo.exe -a\n");
   exit(0);	
 }
 
