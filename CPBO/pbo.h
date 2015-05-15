@@ -32,9 +32,10 @@ typedef unsigned long       DWORD;
 typedef unsigned char       BYTE;
 
 // Function prototypes
-//bool pboEx(char *sf, char *dd, bool overwrite, bool gui);
+bool pboEx(char *sf, char *dd, bool overwrite);
 bool pboPack(char *sd, char *df, bool overwrite);
-//bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
+bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize);
+int strcasecmp_generic(const char *s1, const char *s2);
 
 
 // PBO entry without null terminated string
