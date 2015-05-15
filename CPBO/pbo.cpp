@@ -308,6 +308,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 				CloseHandle(tf);
 			}
 			*/
+			printf("Explicit \"set file creation time\" is disabled !\n");
 		} else {
 			printf("Warning! File creation time not set (Invalid time)\n");
 		}
