@@ -1,4 +1,4 @@
-# CPBO_Linux
+# CPBO Linux
 
 <b>CPBO for Linux and Windows</b> (without GUI)<br/>
 Original CPBO Source: http://www.kegetys.fi/cpbo-source-code-release/<br/>
