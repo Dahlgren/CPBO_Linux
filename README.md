@@ -1,8 +1,10 @@
 # CPBO_Linux
-umstellung von cpbo von win auf linux cmd (just a try)
 
+CPBO for Linux and Windows (without GUI)
+Original CPBO Source: http://www.kegetys.fi/cpbo-source-code-release/
 
-Benötigt Boost Libs je nach System, Download via http://www.boost.org/
+CPBO extract and pack mission files for Bohemia Interactive's ArmA Series.
 
-Binaries für Windows: http://sourceforge.net/projects/boost/files/boost-binaries/1.58.0/
+Requirement: Boost Libaries, Download via http://www.boost.org/
+Binaries for Windows: http://sourceforge.net/projects/boost/files/boost-binaries/1.58.0/
 
