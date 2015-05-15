@@ -405,7 +405,7 @@ bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize) {
   return true;
 }
 
-int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LEN]) {
+int getDirFiles(char *sd, FTENTRY *ftable, int *fti, const char excludes[EX_NUM][EX_LEN]) {
 	char dir[FNAMELEN];
 	//sprintf(dir, "%s\\*.*", sd);
 	strcpy(dir,sd);
@@ -478,7 +478,8 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LE
 	}
 	catch (const filesystem::filesystem_error& ex)
 	{
-		printf(ex.what());
+		printf("%s", ex.what());
+		return 0;
 	}
 }
 
