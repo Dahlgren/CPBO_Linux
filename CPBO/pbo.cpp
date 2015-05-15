@@ -84,11 +84,11 @@ void createDirs(char *fname) {
   strcpy(fn, fname);
 
   for(DWORD i=0;i<strlen(fn);i++)
-    if(fn[i] == '/' || fn[i] == '\\') {
-      fn[i] = 0x00;
-      filesystem::create_directory(fn);
-      fn[i] = '/';
-    }
+	if(fn[i] == '/' || fn[i] == '\\') {
+	  fn[i] = 0x00;
+	  filesystem::create_directory(fn);
+	  fn[i] = '/';
+	}
 
   delete[] fn;
 }
@@ -407,77 +407,74 @@ bool pboDecompress(BYTE *buf, BYTE *out, int size, int outSize) {
 
 int getDirFiles(char *sd, FTENTRY *ftable, int *fti, char excludes[EX_NUM][EX_LEN]) {
 	char dir[FNAMELEN];
-	sprintf(dir, "%s\\*.*", sd);
+	//sprintf(dir, "%s\\*.*", sd);
+	strcpy(dir,sd);
 
 	int res = 1;
 	int count = 0;
+	filesystem::directory_iterator end_iter;
 
-	filesystem::path p (dir);
 
 	try
 	{
-		if (exists(p))
+
+		if ( filesystem::exists(dir) && filesystem::is_directory(dir))
 		{
-			if (is_directory(p))
+		  for( filesystem::directory_iterator dir_iter(dir) ; dir_iter != end_iter ; ++dir_iter)
+		  {
+			if (filesystem::is_regular_file(dir_iter->status()) )
 			{
+				if (!strcasecmp_generic(dir_iter->path().filename().string().c_str(), PREFIXFILE)) // Do not pack prefix file
+					continue;
+				if (!strcasecmp_generic(dir_iter->path().filename().string().c_str(), EXCLUDEFILE))
+					continue;
 
-				for (filesystem::path::iterator it = p.begin(); it != p.end(); ++it)
-				{
-					if (!strcmp(it->filename().string().c_str(), ".."))
-						continue;
-					if (!strcmp(it->filename().string().c_str(), "."))
-						continue;
-					if (!strcasecmp_generic(it->filename().string().c_str(), PREFIXFILE)) // Do not pack prefix file
-						continue;
-					if (!strcasecmp_generic(it->filename().string().c_str(), EXCLUDEFILE))
-						continue;
+				// Check for exclude
+				bool skip = false;
+				for(int i=0; i<EX_NUM; i++) {
+					if (strlen(excludes[i]) > 1 && !strcasecmp_generic(excludes[i], &dir_iter->path().filename().string().c_str()[strlen(dir_iter->path().filename().string().c_str()) - strlen(excludes[i])])) {
+						printf("Skipping: %s - %s\n", dir_iter->path().filename().string().c_str(), excludes[i]);
+						skip = true;
+						break;
+					}
+				}
+				if(skip)
+					continue; // File extension is excluded
 
-					if (filesystem::is_directory((filesystem::path)*it)) {
-						char foo[1024];
-						sprintf(foo, "%s\\%s", sd, it->filename().string().c_str());
-						count += getDirFiles(foo, ftable, fti, excludes);
-					} else {
-						// Check for exclude
-						bool skip = false;
-						for(int i=0; i<EX_NUM; i++) {
-							if (strlen(excludes[i]) > 1 && !strcasecmp_generic(excludes[i], &it->filename().string().c_str()[strlen(it->filename().string().c_str()) - strlen(excludes[i])])) {
-								// printf("Skipping: %s - %s\n", fd.cFileName, excludes[i]);
-								skip = true;
-								break;
-							}
-						}
-						if(skip)
-							continue; // File extension is excluded
+				count++;
+				if(ftable != NULL) {
+					// Fill table. filename...
+					static char foo[1024];
+					sprintf(foo, "%s\\%s", sd, dir_iter->path().filename().string().c_str());
+					strcpy(ftable[*fti].fname, foo);
 
-						count++;
-						if(ftable != NULL) {
-							// Fill table. filename...
-							static char foo[1024];
-							sprintf(foo, "%s\\%s", sd, it->filename().string().c_str());
-							strcpy(ftable[*fti].fname, foo);
-
-							// Modification time
+					// Modification time
 //WARNING original mit creation time
 //TODO
 //							ftable[*fti].timestamp = (DWORD) FILETIMEToUnixTime(fd.ftCreationTime);
-							ftable[*fti].timestamp = static_cast<long int>(last_write_time(p));
+					ftable[*fti].timestamp = static_cast<long int>(filesystem::last_write_time(dir_iter->path()));
 
-							// Size, TODO: 4GB limit check?
+					// Size, TODO: 4GB limit check?
 //INCOMPLETE
 //TODO
-							//ftable[*fti].len = (fd.nFileSizeHigh * MAXDWORD) + fd.nFileSizeLow;
-							ftable[*fti].len = file_size(p);
+					//ftable[*fti].len = (fd.nFileSizeHigh * MAXDWORD) + fd.nFileSizeLow;
+					if (filesystem::is_regular(dir_iter->path()))
+						ftable[*fti].len = filesystem::file_size(dir_iter->path());
 
-							(*fti)++;
-						}
-					}
+					(*fti)++;
 				}
 
 
-				return count;
-
+			} else if (filesystem::is_directory(dir_iter->status())) {
+				char foo[1024];
+				sprintf(foo, "%s\\%s", sd, dir_iter->path().filename().string().c_str());
+				count += getDirFiles(foo, ftable, fti, excludes);
 			}
+
+		  }
 		}
+		
+		return count;
 	}
 	catch (const filesystem::filesystem_error& ex)
 	{
@@ -494,6 +491,7 @@ bool pboPack(char *sd, char *df, bool overwrite) {
 	sprintf(exname, "%s\\%s", sd, EXCLUDEFILE);
 	FILE *ef = fopen(exname, "rb");
 	int eidx = 0;
+
 	if(ef) {
 		printf("Excluded: ");
 		while(fgets(excludes[eidx], EX_LEN, ef)) {
