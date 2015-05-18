@@ -15,7 +15,7 @@
 #define FNAMELEN		512				// Max length of filenames
 #define PREFIXFILE		"$PBOPREFIX$"	// File name to store pbo prefix in
 #define EXCLUDEFILE		"$EXCLUDE$"		// File name with exluded extensions
-#define VERSIONSTRING	"cpbo v2.13 by Kegetys"
+#define VERSIONSTRING		"cpbo v2.2 by Kegetys & Gruppe Adler"
 #define EX_NUM			256				// Max number of excludes
 #define EX_LEN			256				// Max exclude length
 
