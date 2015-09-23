@@ -34,6 +34,27 @@ MA  02110-1301  USA
 
 using namespace boost;
 
+/* return a new string with every instance of ch replaced by repl */
+char *replace(char *s, char ch, char *repl) {
+    int count = 0;
+    const char *t;
+    for(t=s; *t; t++)
+        count += (*t == ch);
+
+    size_t rlen = strlen(repl);
+    char *res = (char *) malloc(strlen(s) + (rlen-1)*count + 1);
+    char *ptr = res;
+    for(t=s; *t; t++) {
+        if(*t == ch) {
+            memcpy(ptr, repl, rlen);
+            ptr += rlen;
+        } else {
+            *ptr++ = *t;
+        }
+    }
+    *ptr = 0;
+    return res;
+}
 
 // Does file exist?
 bool fileExists(char *filename) {
@@ -243,7 +264,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 		}
 		*/
 	} else {
-		strcpy(outdir, dd);
+		strcpy(outdir, replace(dd, '\\', "/"));
 	}
 
 	//Ask for overwriting
@@ -282,7 +303,7 @@ bool pboEx(char *sf, char *dd, bool overwrite) {
 		printf("Extracting: %s (%d KB)\n", ft[o].fname, ft[o].len/1024);
 
 		createDirs(oname);
-		FILE *fo = fopen(oname, "wb");
+		FILE *fo = fopen(replace(oname, '\\', "/"), "wb");
 
 		if(ft[o].origsize == 0) {
 			// Read from pbo, write to file				
@@ -417,10 +438,11 @@ int getDirFiles(char *sd, FTENTRY *ftable, int *fti, const char excludes[EX_NUM]
 
 	try
 	{
+		char * fixed_dir = replace(dir, '\\', "/");
 
-		if ( filesystem::exists(dir) && filesystem::is_directory(dir))
+		if ( filesystem::exists(fixed_dir) && filesystem::is_directory(fixed_dir))
 		{
-		  for( filesystem::directory_iterator dir_iter(dir) ; dir_iter != end_iter ; ++dir_iter)
+		  for( filesystem::directory_iterator dir_iter(fixed_dir) ; dir_iter != end_iter ; ++dir_iter)
 		  {
 			if (filesystem::is_regular_file(dir_iter->status()) )
 			{
@@ -599,7 +621,7 @@ bool pboPack(char *sd, char *df, bool overwrite) {
 	for(int i=0; i<fti; i++) {
 		printf("file %d/%d: %s (%d KB)\n", i+1, fti, ft[i].fname, ft[i].len/1024);
 
-		FILE *inp = fopen(ft[i].fname, "rb");
+		FILE *inp = fopen(replace(ft[i].fname, '\\', "/"), "rb");
 		if(!inp) {
 			printf("Warning! Cannot open file for reading!\n");
 			continue;

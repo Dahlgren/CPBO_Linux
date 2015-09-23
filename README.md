@@ -1,6 +1,6 @@
 # CPBO Linux
 
-<b>CPBO for Linux and Windows</b> (without GUI)<br/>
+<b>CPBO for Linux, OSX and Windows</b> (without GUI)<br/>
 Original CPBO Source: http://www.kegetys.fi/cpbo-source-code-release/<br/>
 
 CPBO extract and pack mission files (*.pbo) for Bohemia Interactive's Armed Assault (ArmA) Series.
